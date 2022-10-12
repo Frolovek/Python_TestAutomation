@@ -1,6 +1,6 @@
 import pytest
 
-from Lection2_HW2 import transform
+from hw2 import transform
 
 DATA = [
     ({}, {}),
