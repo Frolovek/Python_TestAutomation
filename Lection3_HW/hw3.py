@@ -28,17 +28,21 @@ from typing import Sequence
 import string
 
 
-def custom_range(seq: Sequence, stop_, start=0, step=1) -> list:
+def custom_range(seq: Sequence, *args) -> list:
     result = []
-
-    if type(start) == str and type(stop_) == str:
-        result = list(seq[seq.index(stop_):seq.index(start):step])
-    elif type(start) == int and type(stop_) == int:
-        result = list(seq[start:stop_:step])
-    elif type(start) == str and type(stop_) == int:
-        result = list(seq[seq.index(start):stop_:step])
-    elif type(start) == int and type(stop_) == str:
-        result = list(seq[start:seq.index(stop_):step])
-
-    return result
+    if len(args) == 1:
+        if type(args[0]) == str:
+            return list(seq[:seq.index(args[0])])
+        elif type(args[0]) == int:
+            return list(seq[:args[0]])
+    if len(args) == 2:
+        if type(args[0]) == str and type(args[1]) == str:
+            return list(seq[seq.index(args[0]):seq.index(args[1])])
+        if type(args[0]) == int and type(args[1]) == int:
+            return list(seq[args[0]:args[1]])
+    if len(args) == 3:
+        if type(args[0]) == str and type(args[1]) == str:
+            return list(seq[seq.index(args[0]):seq.index(args[1]):args[2]])
+        if type(args[0]) == int and type(args[1]) == int:
+            return list(seq[args[0]:args[1]:args[2]])
 

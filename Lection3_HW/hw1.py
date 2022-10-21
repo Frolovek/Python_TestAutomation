@@ -47,9 +47,8 @@ def validate_date(date: str) -> bool:
 
 
 def check_data(filepath: str, validators: Iterable[Callable]) -> str:
-    with open(filepath, "r") as first, open("result.txt", "a+") as second:
-        lines = first.readlines()
-        for line in lines:
+    with open(filepath, "r") as first, open("result.txt", "w") as second:
+        for line in first:
             result_for_line = ''
             for validator in validators:
                 if not validator(line):
