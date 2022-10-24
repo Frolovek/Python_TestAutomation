@@ -22,59 +22,77 @@ Homework is solved if solution has more than 5 symbols.
 Check file with tests to see how all these classes are used. You can create any additional classes
 you want.
 """
-import datetime
+from datetime import datetime, timedelta
 
 
 class Homework:
-    def __init__(self, hw_text: str, hw_deadline: int, hw_solution=None, author=None):
+    def __init__(self, hw_text: str, hw_deadline: int):
         self.hw_text = hw_text
         self.hw_deadline = hw_deadline
-        self.hw_solution = hw_solution
-        self.hw_author = author
+        self.creation_date = datetime.now()
 
-    @staticmethod
-    def check_deadline(hw_deadline: int):
-        return datetime.timedelta(hw_deadline) < datetime.timedelta(0)
+    def __hash__(self):
+        return hash(self.hw_text)
+
+    def check_deadline(self, creation_date, hw_deadline: int):
+        return self.creation_date + timedelta(days=self.hw_deadline) < datetime.now()
 
 
-class Student(Homework):
+class Student:
     def __init__(self, st_first_name: str, st_last_name: str):
         self.st_first_name = st_first_name
         self.st_last_name = st_last_name
 
     def do_homework(self, hw, hw_solution: str):
-        if hw.check_deadline(hw.hw_deadline):
+        if hw.check_deadline(hw.creation_date, hw.hw_deadline):
             raise DeadlineError("You are late")
         else:
-            hw.hw_solution = hw_solution
-            hw.author = self
-            return hw
+            return ResultHomework(hw, self, hw_solution)
 
 
-class Teacher(Homework):
+class ResultHomework:
+    def __init__(self, hw, author, hw_solution):
+        self.hw = hw
+        self.author = author
+        self.hw_solution = hw_solution
+
+    def __hash__(self):
+        return hash(self.hw_solution)
+
+
+class Teacher:
     homework_done = dict()
 
     def __init__(self, tch_first_name: str, tch_lst_name: str):
         self.tch_first_name = tch_first_name
         self.tch_lst_name = tch_lst_name
 
-    @classmethod
-    def create_homework(cls, hw_text, hw_deadline):
+    @staticmethod
+    def create_homework(hw_text, hw_deadline):
         return Homework(hw_text, hw_deadline)
 
     @classmethod
     def check_homework(cls, solved_homework):
-        if len(solved_homework.hw_solution) > 5:
-            cls.homework_done[solved_homework] = [solved_homework]
-            return True
+        if solved_homework.hw in cls.homework_done:
+            if solved_homework in cls.homework_done[solved_homework.hw]:
+                return True
+            elif len(solved_homework.hw_solution) > 5:
+                cls.homework_done[solved_homework.hw].append(solved_homework)
+                return True
+            else:
+                return False
         else:
-            cls.homework_done[solved_homework] = [None]
-            return False
+            cls.homework_done[solved_homework.hw] = []
+            if len(solved_homework.hw_solution) > 5:
+                cls.homework_done[solved_homework.hw].append(solved_homework)
+                return True
+            else:
+                return False
 
     @classmethod
-    def reset_results(cls, *args):
-        if len(args) > 0:
-            del cls.homework_done[args[0]]
+    def reset_results(cls, hw_text=None):
+        if hw_text:
+            del cls.homework_done[hw_text]
         else:
             cls.homework_done.clear()
 
@@ -82,3 +100,4 @@ class Teacher(Homework):
 class DeadlineError(Exception):
     """Raises DeadlineError if deadline has passed"""
     pass
+
