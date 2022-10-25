@@ -31,10 +31,7 @@ class Homework:
         self.hw_deadline = hw_deadline
         self.creation_date = datetime.now()
 
-    def __hash__(self):
-        return hash(self.hw_text)
-
-    def check_deadline(self, creation_date, hw_deadline: int):
+    def check_deadline(self):
         return self.creation_date + timedelta(days=self.hw_deadline) < datetime.now()
 
 
@@ -44,7 +41,7 @@ class Student:
         self.st_last_name = st_last_name
 
     def do_homework(self, hw, hw_solution: str):
-        if hw.check_deadline(hw.creation_date, hw.hw_deadline):
+        if hw.check_deadline():
             raise DeadlineError("You are late")
         else:
             return ResultHomework(hw, self, hw_solution)
@@ -55,9 +52,6 @@ class ResultHomework:
         self.hw = hw
         self.author = author
         self.hw_solution = hw_solution
-
-    def __hash__(self):
-        return hash(self.hw_solution)
 
 
 class Teacher:
@@ -100,4 +94,3 @@ class Teacher:
 class DeadlineError(Exception):
     """Raises DeadlineError if deadline has passed"""
     pass
-
