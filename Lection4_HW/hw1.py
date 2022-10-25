@@ -84,9 +84,9 @@ class Teacher:
                 return False
 
     @classmethod
-    def reset_results(cls, hw_text=None):
-        if hw_text:
-            del cls.homework_done[hw_text]
+    def reset_results(cls, hw=None):
+        if hw:
+            del cls.homework_done[hw]
         else:
             cls.homework_done.clear()
 
