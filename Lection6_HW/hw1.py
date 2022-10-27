@@ -9,6 +9,10 @@ def merge_elems(*elems):
             for i in elem:
                 if hasattr(i, '__iter__') and not isinstance(i, str):
                     yield from merge_elems(i)
+                elif isinstance(i, str):
+                    for j in i:
+                        iterator = j.__iter__()
+                        yield next(iterator)
                 else:
                     yield i
         else:
@@ -17,7 +21,7 @@ def merge_elems(*elems):
 
 
 # example input
-a = [1, 2, 3]
+a = [['kva'], ['zhaba'], [18, 25], 3]
 b = 6
 c = 'zhaba'
 d = [[1, 2], [3, 4]]
@@ -26,6 +30,10 @@ for _ in merge_elems(a, b, c, d):
     print(_, end=' ')
 
 print('\n' + 'zhaba is finally in a swamp and feel comfortable')
+print("  _   _")
+print(" (.)_(.)")
+print('(   _   )')
+print(" `-----'")
 
 # output: 1 2 3 6 z h a b a 1 2 3 4
 
@@ -34,10 +42,10 @@ print('\n' + 'zhaba is finally in a swamp and feel comfortable')
 
 def map_like(fun, *elems):
     for elem in elems:
-        if hasattr(elem, '__iter__'):
-            yield fun(elem)
-        else:
-            print(str(elem) + ':', f"'{type(elem).__name__}'", "object is not subscriptable")
+            try:
+                yield fun(elem)
+            except TypeError as error:
+                print(f'{elem}' + ': ' + str(error))
 
 
 # example input
