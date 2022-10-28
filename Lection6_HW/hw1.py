@@ -11,8 +11,7 @@ def merge_elems(*elems):
                     yield from merge_elems(i)
                 elif isinstance(i, str):
                     for j in i:
-                        iterator = j.__iter__()
-                        yield next(iterator)
+                        yield j
                 else:
                     yield i
         else:
@@ -45,7 +44,7 @@ def map_like(fun, *elems):
             try:
                 yield fun(elem)
             except TypeError as error:
-                print(f'{elem}' + ': ' + str(error))
+                print(f'{elem}: {error}')
 
 
 # example input
