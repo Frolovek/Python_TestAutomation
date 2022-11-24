@@ -1,8 +1,10 @@
 import requests
 
+BASE_URL = "https://api.punkapi.com/"
+
 
 def test_get_request():
-    url = "https://api.punkapi.com/v2/beers/8"
+    url = BASE_URL + "v2/beers/8"
     expected_status_code = 200
     expected_name = 'Fake Lager'
     expected_abv = 4.7
@@ -14,10 +16,9 @@ def test_get_request():
 
 
 def test_delete_request():
-    url = "https://api.punkapi.com/v2/beers/8"
+    url = BASE_URL + "v2/beers/8"
     expected_status_code = 404
     expected_message = "No endpoint found that matches '/v2/beers/8'"
     response = requests.delete(url)
     assert response.status_code == expected_status_code
     assert response.json()['message'] == expected_message
-
